@@ -7,6 +7,15 @@
         <feature>jakartaee-8.0</feature>
         <!-- Java RESTful Web Services -->
         <feature>jaxrs-2.1</feature>
+        <!-- JSON Processing -->
+        <feature>jsonp-1.1</feature>
+        <!-- Contexts and Dependency Injection -->
+        <feature>cdi-2.0</feature>
+        <!-- Basic authentication -->
+        <feature>appSecurity-3.0</feature>
+        <feature>servlet-4.0</feature>
+        <!-- For JWT -->
+        <feature>mpJwt-1.2</feature>
     </featureManager>
 
     <variable name="default.http.port" defaultValue="6000" />
@@ -17,13 +26,45 @@
                 httpsPort="${default.https.port}"
                 id="defaultHttpEndpoint" host="${defaultHostName}" />
 
-    <application location="login.war" type="war" context-root="/membership-system"></application>
+    <!-- Security configuration -->
+    <!-- <quickStartSecurity userName="jadecarino" userPassword="jadepwd" /> -->
+
+    <basicRegistry id="basic" realm="WebRealm">
+        <user name="jade" password="jadepwd" />
+        <user name="frank" password="frankpwd" />
+        <user name="lydia" password="lydiapwd" />
+
+        <group name="admin">
+            <member name="jade" />
+        </group>
+
+        <group name="user">
+            <member name="jade" />
+            <member name="frank" />
+            <member name="lydia" />
+        </group>
+    </basicRegistry>
+
+    <application location="login.war" type="war" context-root="/membership-system">
+        <application-bnd>
+            <security-role name="admin">
+                <user name="jade" />
+            </security-role>
+            <security-role name="user">
+                <user name="jade" />
+                <user name="frank" />
+                <user name="lydia" />
+            </security-role>
+        </application-bnd>
+    </application>
+
+    <jwtBuilder id="defaultJWT" expiry="2400h"></jwtBuilder>
 
     <!-- Automatically expand WAR files and EAR files -->
     <applicationManager autoExpand="true"/>
 
     <!-- Default SSL configuration enables trust for default certificates from the Java runtime -->
-    <ssl id="defaultSSLConfig" trustDefaultCerts="true" />
+    <ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore" trustDefaultCerts="true" />
 
     <!-- Change JMS port from default 7276 -->
     <wasJmsEndpoint host="*" wasJmsPort="8000" wasJmsSSLPort="8100" />

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+    version="3.1">
+    <display-name>Liberty Project</display-name>
+
+    <!--Create secrets using this tool: https://www.base64encode.org/
+        Default algorithm is DES, so the secret needs to be 8 characters
+        long, then Base64 encoded-->
+    <context-param>
+        <param-name>org.apache.myfaces.SECRET</param-name>
+        <param-value>c3R1ZmZhbmQ=</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>org.apache.myfaces.MAC_SECRET</param-name>
+        <param-value>bW9yZXN0dWY=</param-value>
+    </context-param>
+
+    <context-param>
+      <param-name>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</param-name>
+      <param-value>false</param-value>
+    </context-param>
+
+    <!-- Servlet definitions -->
+    <servlet id="Default">
+        <servlet-name>LoginBean</servlet-name>
+        <servlet-class>login.rest.login.LoginBean</servlet-class>
+        <load-on-startup/>
+    </servlet>
+
+    <!-- Servlet mappings -->        
+    <servlet-mapping id="ServletMapping_Default">
+        <servlet-name>LoginBean</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+
+
+    <!-- Security roles -->
+    <security-role>
+        <role-name>admin</role-name>
+    </security-role>
+
+    <security-role>
+        <role-name>user</role-name>
+    </security-role>
+
+    <!-- Security constraints -->
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Login</web-resource-name>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>user</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <login-config>
+        <auth-method>BASIC</auth-method>
+    </login-config>
+
+</web-app>
