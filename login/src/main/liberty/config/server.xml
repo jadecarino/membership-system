@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="new server">
+
+    <!-- Enable features -->
+    <featureManager>
+        <!-- Jakarta EE -->
+        <feature>jakartaee-8.0</feature>
+        <!-- Java RESTful Web Services -->
+        <feature>jaxrs-2.1</feature>
+    </featureManager>
+
+    <variable name="default.http.port" defaultValue="6000" />
+    <variable name="default.https.port" defaultValue="6080" />
+    <variable name="defaultHostName" value="localhost" />
+    <!-- To access this server from a remote client add a host attribute to the following element, e.g. host="*" -->
+    <httpEndpoint httpPort="${default.http.port}"
+                httpsPort="${default.https.port}"
+                id="defaultHttpEndpoint" host="${defaultHostName}" />
+
+    <application location="login.war" type="war" context-root="/membership-system"></application>
+
+    <!-- Automatically expand WAR files and EAR files -->
+    <applicationManager autoExpand="true"/>
+
+    <!-- Default SSL configuration enables trust for default certificates from the Java runtime -->
+    <ssl id="defaultSSLConfig" trustDefaultCerts="true" />
+
+    <!-- Change JMS port from default 7276 -->
+    <wasJmsEndpoint host="*" wasJmsPort="8000" wasJmsSSLPort="8100" />
+</server>
