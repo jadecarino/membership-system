@@ -87,11 +87,12 @@ public class LoginBean extends HttpServlet {
 
     }
 
-    private String buildJwt(String userName, Set<String> roles) throws Exception {
+    private String buildJwt(String username, Set<String> roles) throws Exception {
         return JwtBuilder.create("defaultJWT")
-                          .claim(Claims.SUBJECT, userName)
-                          .claim("upn", userName)
+                          .claim(Claims.SUBJECT, username)
+                          .claim("upn", username)
                           .claim("groups", roles.toArray(new String[roles.size()]))
+                          .signWith("HS256", "secret")
                           .buildJwt()
                           .compact();
     }

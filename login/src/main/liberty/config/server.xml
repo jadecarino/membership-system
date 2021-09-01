@@ -58,7 +58,7 @@
         </application-bnd>
     </application>
 
-    <jwtBuilder id="defaultJWT" expiry="2400h"></jwtBuilder>
+    <jwtBuilder id="defaultJWT" expiry="2400h" signatureAlgorithm="HS256" sharedKey="secret"></jwtBuilder>
 
     <!-- Automatically expand WAR files and EAR files -->
     <applicationManager autoExpand="true"/>

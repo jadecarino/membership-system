@@ -3,8 +3,16 @@
 
     <!-- Enable features -->
     <featureManager>
+        <!-- Jakarta EE -->
         <feature>jakartaee-8.0</feature>
+        <!-- Java RESTful Web Services -->
         <feature>jaxrs-2.1</feature>
+         <!-- Java Persistence API -->
+        <feature>jpa-2.2</feature>
+         <!-- MicroProfile JSON Web Tokens -->
+        <feature>mpJwt-1.2</feature>
+        <!-- <feature>appSecurity-3.0</feature> -->
+        <feature>jwt-1.0</feature>
     </featureManager>
 
     <variable name="default.http.port" defaultValue="9080" />
@@ -29,6 +37,8 @@
     <applicationManager autoExpand="true"/>
 
     <!-- Default SSL configuration enables trust for default certificates from the Java runtime -->
-    <ssl id="defaultSSLConfig" trustDefaultCerts="true" />
+    <ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore" trustDefaultCerts="true" />
+
+    <jwtConsumer id="defaultJWT" expiry="2400h" signatureAlgorithm="HS256" sharedKey="secret" issuer="https://localhost:6080/jwt/defaultJWT"></jwtConsumer>
 
 </server>
