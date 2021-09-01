@@ -39,7 +39,7 @@ public class EmployeeQuery {
     private List<String> getRoles(String auth) throws ServletException {
 
         auth = auth.substring(7);
-        
+
         JwtToken jwtToken = null;
         try {
             jwtToken = JwtConsumer.create("defaultJWT").createJwt(auth);
@@ -63,8 +63,6 @@ public class EmployeeQuery {
     /**
      * Get all employees
      * 
-     * @throws InvalidConsumerException
-     * @throws InvalidTokenException
      * @throws ServletException
      */
     @GET
@@ -105,8 +103,7 @@ public class EmployeeQuery {
     /**
      * Get the employee with specified employeeId
      * 
-     * @throws InvalidConsumerException
-     * @throws InvalidTokenException
+     * @throws ServletException
      */
     @GET
     @Path("/{employeeId}")
@@ -120,7 +117,7 @@ public class EmployeeQuery {
 
         List<String> groups = getRoles(auth);
 
-        if (groups.contains("user")){
+        if (groups.contains("admin") || groups.contains("user")){
 
             JsonObjectBuilder builder = Json.createObjectBuilder();
 
@@ -139,7 +136,7 @@ public class EmployeeQuery {
             return Response.status(Response.Status.OK).entity(builder.build()).build();
 
         } else {
-            return Response.status(Response.Status.UNAUTHORIZED).entity("Unauthorized").build();
+            return Response.status(Response.Status.FORBIDDEN).entity("Must be a User to access this service").build();
         }
 
     }
@@ -147,8 +144,7 @@ public class EmployeeQuery {
     /**
      * Create an employee with the specified fields
      * 
-     * @throws InvalidConsumerException
-     * @throws InvalidTokenException
+     * @throws ServletException
      */
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -164,7 +160,7 @@ public class EmployeeQuery {
 
         List<String> groups = getRoles(auth);
 
-        if (groups.contains("user")) {
+        if (groups.contains("admin") || groups.contains("user")) {
 
             Employee newEmployee = new Employee(name, phoneNumber, emailAddress, company, cardNumber);
             if (!employeeDAO.findEmployee(name, phoneNumber, emailAddress, company, cardNumber).isEmpty()){
@@ -184,8 +180,7 @@ public class EmployeeQuery {
     /**
      * Update an employee with the specified employeeId with the specified fields
      * 
-     * @throws InvalidConsumerException
-     * @throws InvalidTokenException
+     * @throws ServletException
      */
     @PUT
     @Path("/{employeeId}")
@@ -202,7 +197,7 @@ public class EmployeeQuery {
 
         List<String> groups = getRoles(auth);
 
-        if (groups.contains("user")) {
+        if (groups.contains("admin") || groups.contains("user")) {
 
             Employee prevEmployee = employeeDAO.readEmployee(employeeId);
             if (prevEmployee == null){
@@ -232,8 +227,7 @@ public class EmployeeQuery {
     /**
      * Delete the employee with the specified employeeId
      * 
-     * @throws InvalidConsumerException
-     * @throws InvalidTokenException
+     * @throws ServletException
      */
     @DELETE
     @Path("/{employeeId}")
@@ -247,7 +241,7 @@ public class EmployeeQuery {
 
         List<String> groups = getRoles(auth);
 
-        if (groups.contains("user")) {
+        if (groups.contains("admin") || groups.contains("user")) {
             
             Employee employee = employeeDAO.readEmployee(employeeId);
 
@@ -283,7 +277,6 @@ public class EmployeeQuery {
             return Response.status(Response.Status.FORBIDDEN).entity("Must be an Admin to access this service").build();
         }
 
-    
     }
     
 }

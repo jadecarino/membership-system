@@ -33,6 +33,7 @@
         <user name="jade" password="jadepwd" />
         <user name="frank" password="frankpwd" />
         <user name="lydia" password="lydiapwd" />
+        <user name="testuser" password="testpwd" /> <!-- For unit tests -->
 
         <group name="admin">
             <member name="jade" />
@@ -48,12 +49,10 @@
     <application location="login.war" type="war" context-root="/membership-system">
         <application-bnd>
             <security-role name="admin">
-                <user name="jade" />
+                <group name="admin" />
             </security-role>
             <security-role name="user">
-                <user name="jade" />
-                <user name="frank" />
-                <user name="lydia" />
+                <group name="user" />
             </security-role>
         </application-bnd>
     </application>
