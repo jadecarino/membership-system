@@ -10,7 +10,6 @@ import java.util.Scanner;
 import javax.json.JsonObject;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Form;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.cxf.jaxrs.provider.jsrjsonp.JsrJsonpProvider;
@@ -52,8 +51,6 @@ public class SecurityTests extends EmployeeTests {
     private static final String USER_USERNAME = "frank";
     private static final String USER_PASSWORD = "frankpwd";
 
-    private static final String USERNAME = "testuser";
-    private static final String PASSWORD = "testpwd";
 
     @BeforeAll
     public static void beforeAll() {
@@ -92,7 +89,7 @@ public class SecurityTests extends EmployeeTests {
 
         /* 
          * Cannot generate a JWT from my Login API for a user who is not either a User or Admin
-         * JWT for a user in no group has been generated manually
+         * JWT for a user in no group has been generated manually for testing purposes
          */
         Scanner s = new Scanner(new File("src/main/resources/noGroupJwt.txt"));
 		while (s.hasNextLine()) {
@@ -121,16 +118,58 @@ public class SecurityTests extends EmployeeTests {
 
     @Test
     public void testCreate(){
-        postRequest(noGroupJwt, employeeForm, EMPLOYEE_NAME, EMPLOYEE_PHONENUMBER, EMPLOYEE_EMAILADDRESS, EMPLOYEE_COMPANY, EMPLOYEE_CARDNUMBER).getStatus();
-        int postResponse = postRequest(noGroupJwt, employeeForm, EMPLOYEE_NAME, EMPLOYEE_PHONENUMBER, EMPLOYEE_EMAILADDRESS, EMPLOYEE_COMPANY, EMPLOYEE_CARDNUMBER).getStatus();
+        int postResponse = postRequest(userJwt, employeeForm, EMPLOYEE_NAME, EMPLOYEE_PHONENUMBER, EMPLOYEE_EMAILADDRESS, EMPLOYEE_COMPANY, EMPLOYEE_CARDNUMBER).getStatus();
+        assertEquals(OK_CODE, postResponse, 
+            "Creating an employee with a User JWT should return the HTTP response code " + OK_CODE);
+        postResponse = postRequest(noGroupJwt, employeeForm, EMPLOYEE_NAME, EMPLOYEE_PHONENUMBER, EMPLOYEE_EMAILADDRESS, EMPLOYEE_COMPANY, EMPLOYEE_CARDNUMBER).getStatus();
         assertEquals(FORBIDDEN_CODE, postResponse,
             "Trying to create an employee that doesn't exist without being in a security group should return the HTTP response code "
             + FORBIDDEN_CODE + " over the HTTP response code " + BAD_REQUEST_CODE);
     }
 
+    @Test
+    public void testUpdate(){
+        int doesNotExistUpdateResponse = updateRequest(noGroupJwt, employeeForm, "-1", UPDATE_EMPLOYEE_NAME, UPDATE_EMPLOYEE_PHONENUMBER,
+            UPDATE_EMPLOYEE_EMAILADDRESS, UPDATE_EMPLOYEE_COMPANY, UPDATE_EMPLOYEE_CARDNUMBER).getStatus();
+        assertEquals(FORBIDDEN_CODE, doesNotExistUpdateResponse, 
+            "Trying to update an employee that does not exist without being in a security group should return the HTTP response code "
+            + FORBIDDEN_CODE + " over the HTTP response code " + NOT_FOUND_CODE);
+
+        int postResponse = postRequest(adminJwt, employeeForm, EMPLOYEE_NAME, EMPLOYEE_PHONENUMBER, EMPLOYEE_EMAILADDRESS, EMPLOYEE_COMPANY, EMPLOYEE_CARDNUMBER).getStatus();
+        assertEquals(OK_CODE, postResponse, 
+            "Creating an employee with an Admin JWT should return the HTTP response code " + OK_CODE);
+
+        Employee e = new Employee(EMPLOYEE_NAME, EMPLOYEE_PHONENUMBER, EMPLOYEE_EMAILADDRESS, EMPLOYEE_COMPANY, EMPLOYEE_CARDNUMBER);
+        JsonObject employee = findEmployee(adminJwt, e);
+        int existsUpdateResponse = updateRequest(noGroupJwt, employeeForm, employee.get("employeeId").toString(), EMPLOYEE_NAME, EMPLOYEE_PHONENUMBER,
+            EMPLOYEE_EMAILADDRESS, EMPLOYEE_COMPANY, EMPLOYEE_CARDNUMBER).getStatus();
+        assertEquals(FORBIDDEN_CODE, existsUpdateResponse, 
+            "Trying to update an employee with the same details without being in a security group should return the HTTP response code "
+            + FORBIDDEN_CODE + " over the HTTP response code " + BAD_REQUEST_CODE);
+    }
+
+    @Test
+    public void testDelete(){
+        int deleteResponse = deleteRequest(noGroupJwt, "-1").getStatus();
+        assertEquals(FORBIDDEN_CODE, deleteResponse,
+            "Trying to delete an employee that does not exist without being in a security group should return the HTTP response code "
+            + FORBIDDEN_CODE + " over the HTTP response code " + NOT_FOUND_CODE);
+    }
+
+    @Test
+    public void testDeleteAll(){
+        int deleteResponse = clearDatabase(adminJwt).getStatus();
+        assertEquals(OK_CODE, deleteResponse,
+            "Clearing the database with an Admin JWT should return the HTTP response code " + OK_CODE);
+        
+        deleteResponse = clearDatabase(userJwt).getStatus();
+        assertEquals(FORBIDDEN_CODE, deleteResponse,
+            "Trying to clear the database with a User JWT should return the HTTP response code " + FORBIDDEN_CODE);
+    }
+
     @AfterEach
     public void afterEach() {
-        clearDatabase();
+        clearDatabase(adminJwt);
         response.close();
         client.close();
     }

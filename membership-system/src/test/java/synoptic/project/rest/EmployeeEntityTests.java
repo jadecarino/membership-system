@@ -66,6 +66,7 @@ public class EmployeeEntityTests extends EmployeeTests {
         employeeForm.put(JSONFIELD_COMPANY, EMPLOYEE_COMPANY);
         employeeForm.put(JSONFIELD_CARDNUMBER, EMPLOYEE_CARDNUMBER);
 
+        /* Logging in as an Admin so all services under test can be accessed */
         adminLoginResponse = loginRequest(ADMIN_USERNAME, ADMIN_PASSWORD);
         adminJwt = adminLoginResponse.readEntity(JsonObject.class).getString("jwt").toString();
 
@@ -80,7 +81,8 @@ public class EmployeeEntityTests extends EmployeeTests {
     
     @Test
     public void testInvalidRead() {
-        assertEquals(NOT_FOUND_CODE, getRequestIndividual(adminJwt, "-1").getStatus(),
+        int getResponse = getRequestIndividual(adminJwt, "-1").getStatus();
+        assertEquals(NOT_FOUND_CODE, getResponse,
           "Trying to read an employee that does not exist should return the HTTP response code " + NOT_FOUND_CODE);
     }
 
@@ -94,7 +96,7 @@ public class EmployeeEntityTests extends EmployeeTests {
 
     @Test
     public void testInvalidUpdate() {
-        int doesNotExistUpdateResponse = updateRequest(employeeForm, "-1", UPDATE_EMPLOYEE_NAME, UPDATE_EMPLOYEE_PHONENUMBER,
+        int doesNotExistUpdateResponse = updateRequest(adminJwt, employeeForm, "-1", UPDATE_EMPLOYEE_NAME, UPDATE_EMPLOYEE_PHONENUMBER,
             UPDATE_EMPLOYEE_EMAILADDRESS, UPDATE_EMPLOYEE_COMPANY, UPDATE_EMPLOYEE_CARDNUMBER).getStatus();
         assertEquals(NOT_FOUND_CODE, doesNotExistUpdateResponse, 
             "Trying to update an employee that does not exist should return the HTTP response code " + NOT_FOUND_CODE);
@@ -104,8 +106,8 @@ public class EmployeeEntityTests extends EmployeeTests {
             "Creating an employee should return the HTTP response code " + OK_CODE);
 
         Employee e = new Employee(EMPLOYEE_NAME, EMPLOYEE_PHONENUMBER, EMPLOYEE_EMAILADDRESS, EMPLOYEE_COMPANY, EMPLOYEE_CARDNUMBER);
-        JsonObject employee = findEmployee(e);
-        int existsUpdateResponse = updateRequest(employeeForm, employee.get("employeeId").toString(), EMPLOYEE_NAME, EMPLOYEE_PHONENUMBER,
+        JsonObject employee = findEmployee(adminJwt, e);
+        int existsUpdateResponse = updateRequest(adminJwt, employeeForm, employee.get("employeeId").toString(), EMPLOYEE_NAME, EMPLOYEE_PHONENUMBER,
             EMPLOYEE_EMAILADDRESS, EMPLOYEE_COMPANY, EMPLOYEE_CARDNUMBER).getStatus();
         assertEquals(BAD_REQUEST_CODE, existsUpdateResponse, 
             "Trying to update an employee with the same details should return the HTTP response code " + BAD_REQUEST_CODE);
@@ -113,7 +115,7 @@ public class EmployeeEntityTests extends EmployeeTests {
 
     @Test
     public void testInvalidDelete() {
-        int deleteResponse = deleteRequest("-1").getStatus();
+        int deleteResponse = deleteRequest(adminJwt, "-1").getStatus();
         assertEquals(NOT_FOUND_CODE, deleteResponse,
             "Trying to delete an employee that does not exist should return the HTTP response code " + NOT_FOUND_CODE);
     }
@@ -121,12 +123,13 @@ public class EmployeeEntityTests extends EmployeeTests {
     @Test
     public void testCRUD() {
         int employeeCount = getRequest(adminJwt).readEntity(JsonObject.class).size();
+        
         int postResponse = postRequest(adminJwt, employeeForm, EMPLOYEE_NAME, EMPLOYEE_PHONENUMBER, EMPLOYEE_EMAILADDRESS, EMPLOYEE_COMPANY, EMPLOYEE_CARDNUMBER).getStatus();
         assertEquals(OK_CODE, postResponse, 
           "Creating an employee should return the HTTP response code " + OK_CODE);
      
         Employee e = new Employee(EMPLOYEE_NAME, EMPLOYEE_PHONENUMBER, EMPLOYEE_EMAILADDRESS, EMPLOYEE_COMPANY, EMPLOYEE_CARDNUMBER);
-        JsonObject employee = findEmployee(e);
+        JsonObject employee = findEmployee(adminJwt, e);
         assertData(employee, EMPLOYEE_NAME, EMPLOYEE_PHONENUMBER, EMPLOYEE_EMAILADDRESS, EMPLOYEE_COMPANY, EMPLOYEE_CARDNUMBER);
 
         employeeForm.put(JSONFIELD_NAME, UPDATE_EMPLOYEE_NAME);
@@ -134,18 +137,18 @@ public class EmployeeEntityTests extends EmployeeTests {
         employeeForm.put(JSONFIELD_EMAILADDRESS, UPDATE_EMPLOYEE_EMAILADDRESS);
         employeeForm.put(JSONFIELD_COMPANY, UPDATE_EMPLOYEE_COMPANY);
         employeeForm.put(JSONFIELD_CARDNUMBER, UPDATE_EMPLOYEE_CARDNUMBER);
-        int updateResponse = updateRequest(employeeForm, employee.get("employeeId").toString(), UPDATE_EMPLOYEE_NAME, UPDATE_EMPLOYEE_PHONENUMBER,
+        int updateResponse = updateRequest(adminJwt, employeeForm, employee.get("employeeId").toString(), UPDATE_EMPLOYEE_NAME, UPDATE_EMPLOYEE_PHONENUMBER,
             UPDATE_EMPLOYEE_EMAILADDRESS, UPDATE_EMPLOYEE_COMPANY, UPDATE_EMPLOYEE_CARDNUMBER).getStatus();
         assertEquals(OK_CODE, updateResponse, 
           "Updating an employee should return the HTTP response code " + OK_CODE);
         
         e = new Employee(UPDATE_EMPLOYEE_NAME, UPDATE_EMPLOYEE_PHONENUMBER, UPDATE_EMPLOYEE_EMAILADDRESS,
             UPDATE_EMPLOYEE_COMPANY, UPDATE_EMPLOYEE_CARDNUMBER);
-        employee = findEmployee(e);
+        employee = findEmployee(adminJwt, e);
         assertData(employee, UPDATE_EMPLOYEE_NAME, UPDATE_EMPLOYEE_PHONENUMBER, UPDATE_EMPLOYEE_EMAILADDRESS,
              UPDATE_EMPLOYEE_COMPANY, UPDATE_EMPLOYEE_CARDNUMBER);
 
-        int deleteResponse = deleteRequest(employee.get("employeeId").toString()).getStatus();
+        int deleteResponse = deleteRequest(adminJwt, employee.get("employeeId").toString()).getStatus();
         assertEquals(OK_CODE, deleteResponse, 
           "Deleting an employee should return the HTTP response code " + OK_CODE);
 
@@ -155,7 +158,7 @@ public class EmployeeEntityTests extends EmployeeTests {
 
     @AfterEach
     public void afterEach() {
-        clearDatabase();
+        clearDatabase(adminJwt);
         response.close();
         client.close();
     }

@@ -48,7 +48,7 @@ public class EmployeeTests {
     }
 
     /**
-     *  Makes a GET request to the /employees endpoint and returns result in a JsonObject containing a JsonArray
+     *  Makes a GET request to the /employees endpoint
      */
     protected Response getRequest(String jwt) {
         webTarget = client.target(baseUrl);
@@ -57,7 +57,7 @@ public class EmployeeTests {
     }
 
     /**
-     *  Makes a GET request to the /employees/{employeeId} endpoint and returns a Response
+     *  Makes a GET request to the /employees/{employeeId} endpoint
      */ 
     protected Response getRequestIndividual(String jwt, String employeeId) {
         webTarget = client.target(baseUrl + "/" + employeeId);
@@ -85,34 +85,33 @@ public class EmployeeTests {
      *  Makes a PUT request to the employees/{employeeId}?name={name}&phoneNumber={phoneNumber}
      *  &emailAddress={emailAddress}&company={company}&cardNumber={cardNumber} endpoint
      */
-    protected Response updateRequest(HashMap<String, String> formDataMap, String employeeId, String name, String phoneNumber,
+    protected Response updateRequest(String jwt, HashMap<String, String> formDataMap, String employeeId, String name, String phoneNumber,
                                 String emailAddress, String company, String cardNumber) {
         formDataMap.forEach((formField, data) -> {
             form.param(formField, data);
         });
         webTarget = client.target(baseUrl + "/" + employeeId + "?name=" + name + "&phoneNumber=" + phoneNumber + "&emailAddress=" + 
                                     emailAddress + "&company=" + company + "&cardNumber=" + cardNumber);
-        response = webTarget.request().header("Authorization", "Bearer " + adminJwt).put(Entity.form(form));
+        response = webTarget.request().header("Authorization", "Bearer " + jwt).put(Entity.form(form));
         form = new Form();
         return response;
     }
 
     /**
-     *  Makes a DELETE request to /employees/{employeeId} endpoint and return the response 
-     *  code 
+     *  Makes a DELETE request to /employees/{employeeId} endpoint
      */
-    protected Response deleteRequest(String employeeId) {
+    protected Response deleteRequest(String jwt, String employeeId) {
         webTarget = client.target(baseUrl + "/" + employeeId);
-        response = webTarget.request().header("Authorization", "Bearer " + adminJwt).delete();
+        response = webTarget.request().header("Authorization", "Bearer " + jwt).delete();
         return response;
     }
 
     /**
      *  Makes a GET request to the /employees endpoint and returns the employee provided
-     *  if it exists. 
+     *  if it exists
      */
-    protected JsonObject findEmployee(Employee e) {
-        JsonObject object = getRequest(adminJwt).readEntity(JsonObject.class);
+    protected JsonObject findEmployee(String jwt, Employee e) {
+        JsonObject object = getRequest(jwt).readEntity(JsonObject.class);
         JsonArray employees = (JsonArray) object.get("employees");
         for (int i = 0; i < employees.size(); i++) {
             JsonObject testEmployee = employees.getJsonObject(i);
@@ -125,9 +124,13 @@ public class EmployeeTests {
         return null;
     }
 
-    protected void clearDatabase(){
+    /**
+     *  Makes a DELETE request to the /employees/clear endpoint to clear the database
+     */
+    protected Response clearDatabase(String jwt){
         webTarget = client.target(baseUrl + "/clear");
-        response = webTarget.request().header("Authorization", "Bearer " + adminJwt).delete();
+        response = webTarget.request().header("Authorization", "Bearer " + jwt).delete();
+        return response;
     }
 
     /**
