@@ -1,0 +1,57 @@
+openapi: 3.0.3
+info:
+  title: Login service
+
+servers:
+  - url: 'http://{server}:{port}/membership-system'
+    variables:
+      server:
+        default: localhost
+      port:
+        default: "6000"
+
+paths:
+#################
+# Login API  #
+#################
+  /login:
+    get:
+      operationId: login
+      summary: Login
+      security: 
+        - BasicAuth
+      responses:
+        '200':
+          description: Json Object containing a Json Web Token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonWebToken'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+                
+components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+  schemas:
+    JsonWebToken:
+      type: object
+      properties:
+        jwt:
+          type: integer
+    JsonError:
+      properties:
+        error:
+          type: string

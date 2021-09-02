@@ -1,0 +1,336 @@
+openapi: 3.0.3
+info:
+  title: Membership System
+
+servers:
+  - url: 'http://{server}:{port}/membership-system'
+    variables:
+      server:
+        default: localhost
+      port:
+        default: "9080"
+
+paths:
+#################
+# Employee API  #
+#################
+  /employees:
+    get:
+      operationId: getAllEmployees
+      summary: Get all Employees
+      security:
+        - BearerAuth
+      responses:
+        '200':
+          description: Json Object containing Json Array of Employees
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employees'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+    post:
+      operationId: createEmployee
+      summary: Create an Employee
+      security:
+        - BearerAuth
+      parameters: 
+        - name: name
+          in: query
+          description: Name
+          required: true
+          schema:
+            type: string
+        - name: phoneNumber
+          in: query
+          description: Phone number
+          required: true
+          schema:
+            type: string
+        - name: emailAddress
+          in: query
+          description: Email address
+          required: true
+          schema:
+            type: string
+        - name: company
+          in: query
+          description: Company
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Confirmation message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Confirmation'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+
+  /employees/{employeeId}:
+    get:
+      operationId: getIndividualEmployee
+      summary: Get an individual Employee
+      security:
+        - BearerAuth
+      parameters:
+        - name: employeeId
+          in: path
+          description: Employee ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Json Object of an Employee
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+    delete:
+      operationId: deleteEmployee
+      summary: Delete an Employee
+      security:
+        - BearerAuth
+      parameters:
+        - name: employeeId
+          in: path
+          description: Employee ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Confirmation message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Confirmation'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'  
+    put:
+      operationId: updateEmployee
+      summary: Update an Employee
+      security:
+        - BearerAuth
+      parameters:
+        - name: employeeId
+          in: path
+          description: Employee ID
+          required: true
+          schema:
+            type: string
+        - name: name
+          in: query
+          description: Name
+          required: true
+          schema:
+            type: string
+        - name: phoneNumber
+          in: query
+          description: Phone number
+          required: true
+          schema:
+            type: string
+        - name: emailAddress
+          in: query
+          description: Email address
+          required: true
+          schema:
+            type: string
+        - name: company
+          in: query
+          description: Company
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Confirmation message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Confirmation'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'  
+  
+  /employees/clear:
+    delete:
+      operationId: deleteAllEmployees
+      summary: Delete all Employees
+      security:
+        - BearerAuth
+      responses:
+        '200':
+          description: Confirmation message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Confirmation'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    Employees:
+      type: object
+      properties:
+        employees:
+          type: array
+          items:
+            $ref: '#/components/schemas/Employee'
+    Employee:
+      type: object
+      properties:
+        employeeId:
+          type: integer
+        name:
+          type: string
+        phoneNumber:
+          type: string
+        emailAddress:
+          type: string
+        company:
+          type: string
+    Confirmation:
+      properties:
+        error:
+          type: string
+    JsonError:
+      properties:
+        error:
+          type: string
