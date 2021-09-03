@@ -14,13 +14,13 @@ import javax.servlet.ServletException;
 import javax.transaction.Transactional;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -74,7 +74,7 @@ public class EmployeeQuery {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
-    public Response doGet(@HeaderParam("Authorization") String auth) throws ServletException {
+    public Response getAllEmployees(@HeaderParam("Authorization") String auth) throws ServletException {
 
         if (auth == null) {
             return Response.status(Response.Status.UNAUTHORIZED).entity("Unauthorized").build();
@@ -115,7 +115,7 @@ public class EmployeeQuery {
     @Path("/{employeeId}")
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
-    public Response doGet(@HeaderParam("Authorization") String auth, @PathParam("employeeId") int employeeId) throws ServletException {
+    public Response getEmployee(@HeaderParam("Authorization") String auth, @PathParam("employeeId") int employeeId) throws ServletException {
 
         if (auth == null){
             return Response.status(Response.Status.UNAUTHORIZED).entity("Unauthorized").build();
@@ -155,7 +155,7 @@ public class EmployeeQuery {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
-    public Response doPost(@HeaderParam("Authorization") String auth, @QueryParam("name") String name,
+    public Response createEmployee(@HeaderParam("Authorization") String auth, @QueryParam("name") String name,
             @QueryParam("phoneNumber") String phoneNumber, @QueryParam("emailAddress") String emailAddress,
             @QueryParam("company") String company, @QueryParam("cardNumber") String cardNumber)
             throws ServletException {
@@ -195,7 +195,7 @@ public class EmployeeQuery {
     @Path("/{employeeId}")
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
-    public Response doPut(@HeaderParam("Authorization") String auth, @PathParam("employeeId") int employeeId,
+    public Response updateEmployee(@HeaderParam("Authorization") String auth, @PathParam("employeeId") int employeeId,
             @QueryParam("name") String newName, @QueryParam("phoneNumber") String newPhoneNumber,
             @QueryParam("emailAddress") String newEmailAddress, @QueryParam("company") String newCompany,
             @QueryParam("cardNumber") String newCardNumber) throws ServletException {
@@ -217,15 +217,24 @@ public class EmployeeQuery {
                 return Response.status(Response.Status.BAD_REQUEST).entity("Employee already exists").build();
             }
 
+            String confirmationMessage = "Employee updated";
+            if (prevEmployee.getCardNumber() != newCardNumber){
+                Account oldAccount = accountDAO.readAccount(prevEmployee.getCardNumber());
+                int balance = oldAccount.getBalance();
+                Account newAccount = new Account(newCardNumber, balance);
+                accountDAO.createAccount(newAccount);
+                accountDAO.deleteAccount(oldAccount);
+                confirmationMessage = confirmationMessage + " and new account opened with new Card Number";
+            }
+
             prevEmployee.setName(newName);
             prevEmployee.setPhoneNumber(newPhoneNumber);
             prevEmployee.setEmailAddress(newEmailAddress);
             prevEmployee.setCompany(newCompany);
             prevEmployee.setCardNumber(newCardNumber);
-
             employeeDAO.updateEmployee(prevEmployee);
 
-            return Response.status(Response.Status.OK).entity("Employee updated").build();
+            return Response.status(Response.Status.OK).entity(confirmationMessage).build();
 
         } else {
             return Response.status(Response.Status.FORBIDDEN).entity("Must be a User to access this service").build();
@@ -242,7 +251,7 @@ public class EmployeeQuery {
     @Path("/{employeeId}")
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
-    public Response doDelete(@HeaderParam("Authorization") String auth, @PathParam("employeeId") int employeeId) throws ServletException {
+    public Response deleteEmployee(@HeaderParam("Authorization") String auth, @PathParam("employeeId") int employeeId) throws ServletException {
 
         if (auth == null){
             return Response.status(Response.Status.UNAUTHORIZED).entity("Unauthorized").build();
@@ -258,9 +267,11 @@ public class EmployeeQuery {
                 return Response.status(Response.Status.NOT_FOUND).entity("Employee does not exist").build();
             }
     
+            Account account = accountDAO.readAccount(employee.getCardNumber());
+            accountDAO.deleteAccount(account);
             employeeDAO.deleteEmployee(employee);
     
-            return Response.status(Response.Status.OK).entity("Employee deleted").build();
+            return Response.status(Response.Status.OK).entity("Employee deleted and account closed").build();
         } else {
             return Response.status(Response.Status.FORBIDDEN).entity("Must be a User to access this service").build();
         }
@@ -279,6 +290,8 @@ public class EmployeeQuery {
 
         if (groups.contains("admin")){
             for (Employee employee : employeeDAO.readAllEmployees()){
+                Account account = accountDAO.readAccount(employee.getCardNumber());
+                accountDAO.deleteAccount(account);
                 employeeDAO.deleteEmployee(employee);
             }
             return Response.status(Response.Status.OK).entity("Database cleared").build();
