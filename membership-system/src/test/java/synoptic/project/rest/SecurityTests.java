@@ -54,6 +54,8 @@ public class SecurityTests extends EmployeeTests {
 
     @BeforeAll
     public static void beforeAll() {
+        // loginPort = "6080";
+        // loginBaseUrl = "https://localhost:" + loginPort + "/membership-system/login";
         loginPort = "6000";
         loginBaseUrl = "http://localhost:" + loginPort + "/membership-system/login";
 
@@ -123,7 +125,7 @@ public class SecurityTests extends EmployeeTests {
             "Creating an employee with a User JWT should return the HTTP response code " + OK_CODE);
         postResponse = postRequest(noGroupJwt, employeeForm, EMPLOYEE_NAME, EMPLOYEE_PHONENUMBER, EMPLOYEE_EMAILADDRESS, EMPLOYEE_COMPANY, EMPLOYEE_CARDNUMBER).getStatus();
         assertEquals(FORBIDDEN_CODE, postResponse,
-            "Trying to create an employee that doesn't exist without being in a security group should return the HTTP response code "
+            "Trying to create an employee that already exists without being in a security group should return the HTTP response code "
             + FORBIDDEN_CODE + " over the HTTP response code " + BAD_REQUEST_CODE);
     }
 

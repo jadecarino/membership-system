@@ -57,7 +57,7 @@ public class EmployeeEntityTests extends EmployeeTests {
         form = new Form();
         client = ClientBuilder.newClient();
         client.register(JsrJsonpProvider.class);
-
+        
         employeeForm = new HashMap<String, String>();
 
         employeeForm.put(JSONFIELD_NAME, EMPLOYEE_NAME);
@@ -123,7 +123,7 @@ public class EmployeeEntityTests extends EmployeeTests {
     @Test
     public void testCRUD() {
         int employeeCount = getRequest(adminJwt).readEntity(JsonObject.class).size();
-        
+
         int postResponse = postRequest(adminJwt, employeeForm, EMPLOYEE_NAME, EMPLOYEE_PHONENUMBER, EMPLOYEE_EMAILADDRESS, EMPLOYEE_COMPANY, EMPLOYEE_CARDNUMBER).getStatus();
         assertEquals(OK_CODE, postResponse, 
           "Creating an employee should return the HTTP response code " + OK_CODE);

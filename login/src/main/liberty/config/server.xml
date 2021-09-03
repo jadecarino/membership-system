@@ -16,8 +16,11 @@
         <feature>servlet-4.0</feature>
         <!-- For JWT -->
         <feature>mpJwt-1.2</feature>
+        <!-- SSL -->
+        <feature>transportSecurity-1.0</feature>
     </featureManager>
 
+    <!-- <variable name="default.http.port" defaultValue="-1" /> -->
     <variable name="default.http.port" defaultValue="6000" />
     <variable name="default.https.port" defaultValue="6080" />
     <variable name="defaultHostName" value="localhost" />
@@ -33,7 +36,7 @@
         <user name="jade" password="jadepwd" />
         <user name="frank" password="frankpwd" />
         <user name="lydia" password="lydiapwd" />
-        <user name="testuser" password="testpwd" /> <!-- For unit tests -->
+        <!-- <user name="testuser" password="testpwd" /> For unit tests -->
 
         <group name="admin">
             <member name="jade" />
@@ -63,7 +66,9 @@
     <applicationManager autoExpand="true"/>
 
     <!-- Default SSL configuration enables trust for default certificates from the Java runtime -->
-    <ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore" trustDefaultCerts="true" />
+    <!-- <ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore" trustDefaultCerts="true" /> -->
+    <keyStore id="defaultKeyStore" password="myPassword"/>
+    <sslDefault sslRef="defaultSSLConfig" />
 
     <!-- Change JMS port from default 7276 -->
     <wasJmsEndpoint host="*" wasJmsPort="8000" wasJmsSSLPort="8100" />

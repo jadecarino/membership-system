@@ -29,12 +29,18 @@ import com.ibm.websphere.security.jwt.InvalidTokenException;
 import com.ibm.websphere.security.jwt.JwtConsumer;
 import com.ibm.websphere.security.jwt.JwtToken;
 
+import synoptic.project.rest.account.Account;
+import synoptic.project.rest.account.AccountDataAccessObject;
+
 @RequestScoped
 @Path("/employees")
 public class EmployeeQuery {
 
     @Inject
     private EmployeeDataAccessObject employeeDAO;
+
+    @Inject
+    private AccountDataAccessObject accountDAO;
 
     private List<String> getRoles(String auth) throws ServletException {
 
@@ -168,7 +174,10 @@ public class EmployeeQuery {
             }
             employeeDAO.createEmployee(newEmployee);
 
-            return Response.status(Response.Status.OK).entity("Employee created").build(); 
+            Account newAccount = new Account(cardNumber, 0);
+            accountDAO.createAccount(newAccount);
+
+            return Response.status(Response.Status.OK).entity("Employee created and account opened").build(); 
 
         } else {
            return Response.status(Response.Status.FORBIDDEN).entity("Must be a User to access this service").build();

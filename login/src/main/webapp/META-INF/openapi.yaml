@@ -3,17 +3,17 @@ info:
   title: Login service
 
 servers:
-  - url: 'http://{server}:{port}/membership-system'
+  - url: 'https://{server}:{port}/membership-system'
     variables:
       server:
         default: localhost
       port:
-        default: "6000"
+        default: "6080"
 
 paths:
-#################
+##############
 # Login API  #
-#################
+##############
   /login:
     get:
       operationId: login

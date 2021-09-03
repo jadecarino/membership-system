@@ -118,18 +118,32 @@ public class Employee implements Serializable {
         } else if (!name.equals(other.name)) {
             return false;
         }
+        if (phoneNumber == null) {
+            if (other.phoneNumber != null) {
+                return false;
+            }
+        } else if (!phoneNumber.equals(other.phoneNumber)) {
+            return false;
+        }
+        if (emailAddress == null) {
+            if (other.emailAddress != null) {
+                return false;
+            }
+        } else if (!emailAddress.equals(other.emailAddress)) {
+            return false;
+        }
+        if (company == null) {
+            if (other.company != null) {
+                return false;
+            }
+        } else if (!company.equals(other.company)) {
+            return false;
+        }
         if (cardNumber == null) {
             if (other.cardNumber != null) {
                 return false;
             }
         } else if (!cardNumber.equals(other.cardNumber)) {
-            return false;
-        }
-        if (name == null) {
-            if (other.name != null) {
-                return false;
-            }
-        } else if (!name.equals(other.name)) {
             return false;
         }
 
