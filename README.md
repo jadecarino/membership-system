@@ -11,7 +11,7 @@ Prerequisites:
 
 To build the application and deploy it to Open Liberty, please follow the instructions below:
 
-1. Clone this Github repository to your machine. Use your Terminal to navigate to the directory you want to place the repo, and run the command 
+1. If you haven't already downloaded the source code, clone this Github repository to your machine. Use your Terminal to navigate to the directory you want to place the repo, and run the command 
     ```sh
     git clone https://github.com/jadecarino/membership-system.git
     ```
@@ -21,19 +21,24 @@ To build the application and deploy it to Open Liberty, please follow the instru
     cd Synoptic\ Project\ Membership\ System
     ```
 
-3. Navigate to the [`login`] directory and deploy the Login API to Open Liberty, using the commands
+3. Navigate to the `login` directory and deploy the Login API to Open Liberty, using the commands
     ```sh
     cd login
     mvn liberty:run
     ```
 
-4. Open another command line session and navigate to the [`membership-system`] directory and deploy the Membership System to Open Liberty, using the commands
+4. Open another command line session and navigate to the `membership-system` directory and deploy the Membership System to Open Liberty, using the commands
     ```sh
     cd membership-system
     mvn liberty:run
     ```
 
-This will start two Open Liberty server instances: the web application 'login' will be available on https://localhost:6080/membership-system/ and the web application 'membership-system' will be available on http://localhost:9080/membership-system/
+After you see the following message in both command line sessions, both of your servers are ready:
+```sh
+The defaultServer server is ready to run a smarter planet.
+```
+
+You will have two Open Liberty server instances: the web application 'login' will be available on https://localhost:6080/membership-system/ and the web application 'membership-system' will be available on http://localhost:9080/membership-system/
 
 
 Now, you can use Postman to test out the application. If you don't already have a Postman account, please login using this temporary account and press the button to fork and use the collection: 
