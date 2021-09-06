@@ -34,9 +34,9 @@ public class SampleData {
     @Path("/load")
     @Transactional
     public Response loadSampleData(){
-        doPost("Jade", "07500100200", "jade@ibm.com", "IBM", "40029441");
-        doPost("Frank", "07300200400", "frank@firebrand.com", "Firebrand", "30042570");
-        doPost("Lydia", "07800500600", "lydia@bcs.com", "BCS", "47502001");
+        doPost("Jade", "07500100200", "jade@bowscars.com", "Bows Formula One High Performance Cars", "sh27fjq92jf72hd8");
+        doPost("Frank", "07300200400", "frank@bowscars.com", "Bows Formula One High Performance Cars", "bv4sg68sj46fkd43");
+        doPost("Lydia", "07800500600", "lydia@bowscars.com", "Bows Formula One High Performance Cars", "06jv62b48vja5c75");
         return Response.status(Response.Status.OK).entity("Sample data load into Database").build();
 
     }
