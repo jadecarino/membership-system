@@ -80,11 +80,11 @@ Expand all of the folders inside the Membership System collection to see all of 
 | frank    | frankpwd | user        |
 | lydia    | lydiapwd | user        |
 
-![Login API](./docs-assets/Login-API.png)
-
 **IMPORTANT: The following requests are restricted to just Admins (jade), so if you try to access them as a User (frank or lydia), you will get a 401 Unauthorized.**
 - Get all employees
 - Delete all employees
+
+![Login API](./docs-assets/Login-API.png)
 
 3. Copy the Json Web Token from the response (excluding the quotation marks) to your clipboard. You can now paste it into the Bearer token of all other requests on the Membership System to authenticate them. 
 
@@ -94,18 +94,21 @@ Expand all of the folders inside the Membership System collection to see all of 
 
 4. Use the **Get all employees** request in the Employees folder to view the sample data that was just loaded into the system.
 
-5. Use any of the other requests in the Postman collection: view information about an individual employee, update their details, create a new employee, view an employee’s account balance using their card number, top up their balance or pay for an item.
+![Get request](./docs-assets/Get-request.png)
 
+5. Now try it out yourself! Use any of the other requests in the Postman collection: you can view information about an individual employee, update their details, create a new employee, view an employee’s account balance using their card number, top up their balance or pay for an item.
+
+**How to write requests:**
 The requests require a mix of path and query parameters. I have left placeholders in the requests to make it easier to write them.
 - Path parameters are for identifying a resource
 - Query parameters are for entering information
 
-**Example:**
-If you want to update an employee whose Employee ID is '5678', and you want to update their Name to 'Bob', Phone number to '07100200300', Email address to 'bob@email.com', Company to 'Github' and Card number to '1234', you identify them using a path parameter and enter the update information as query parameters:
-
+The PUT request should be saved in the Postman collection like this:
 ```sh
 localhost:9080/membership-system/employees/{employeeId}?name={name}&phoneNumber={phoneNumber}&emailAddress={emailAddress}&company={company}&cardNumber={cardNumber}
 ```
+
+Substitute the placeholders like so, to update the employee with employee id 5678:
 ```sh
 localhost:9080/membership-system/employees/5678?name=Bob&phoneNumber=07100200300&emailAddress=bob@email.com&company=Github&cardNumber=1234
 ```
