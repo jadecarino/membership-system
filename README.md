@@ -44,6 +44,7 @@ You will have two Open Liberty server instances: the web application 'login' wil
 ### Postman 
 
 Now, you can use Postman to test out the application. 
+
 **IMPORTANT: if you are using the Postman web client, you will need to download the Postman Desktop Agent.**
 
 Press the button below to fork and use the collection: 
@@ -57,8 +58,10 @@ If you don't already have a Postman account, please login using this temporary a
 | synopticprojecttemp@gmail.com | Firebrand123  |
 
 Fork the collection and save it to a Workspace.
-
-![Fork](./docs-assets/Fork.png) ![Fork2](./docs-assets/Fork2.png)
+<img src="./docs-assets/Fork.png" style="max-width:50%">
+<img src="./docs-assets/Fork2.png" style="max-width:50%">
+<!-- ![Fork](./docs-assets/Fork.png)
+![Fork2](./docs-assets/Fork2.png) -->
 
 Expand all of the folders inside the Membership System collection to see all of the requests.
 
