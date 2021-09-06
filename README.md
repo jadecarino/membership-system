@@ -45,6 +45,7 @@ You will have two Open Liberty server instances: the web application 'login' wil
 
 
 
+
 ### Postman 
 
 Now, you can use Postman to test out the application. 
@@ -65,7 +66,6 @@ If you don't already have a Postman account, please login using this temporary a
 
 Fork the collection and save it to a Workspace.
 ![Fork](./docs-assets/Fork.png)
-![Fork2](./docs-assets/Fork2.png)
 
 
 Expand all of the folders inside the Membership System collection to see all of the requests.
