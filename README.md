@@ -9,47 +9,54 @@ Prerequisites:
 -   Postman
 -	Git (optional)
 
-To try out the application for yourself, please follow the instructions below:
+To build the application and deploy it to Open Liberty, please follow the instructions below:
 
 1. Clone this Github repository to your machine. Use your Terminal to navigate to the directory you want to place the repo, and run the command 
     ```sh
     git clone https://github.com/jadecarino/membership-system.git
     ```
 
-1. Navigate to the root of the repository, using the command
+2. Navigate to the root of the repository, using the command
     ```sh
     cd Synoptic\ Project\ Membership\ System
     ```
 
-1. Run the shell script file to build and deploy the application to Open Liberty, using the command 
+3. Run the shell script file to build and deploy the application to Open Liberty, using the command 
     ```sh
     bash script.sh
     ```
-    This will start two Open Liberty server instances: the web application login will be available on https://localhost:6080/membership-system/ and the web application membership-system will be available on http://localhost:9080/membership-system/
 
-Now you can use Postman to test out the application:
+This will start two Open Liberty server instances: the web application 'login' will be available on https://localhost:6080/membership-system/ and the web application 'membership-system' will be available on http://localhost:9080/membership-system/
+
+
+Now,  you can use Postman to test out the application:
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/15899001-aaa15db3-9cec-44a6-86a1-c4aaacfbcaa1?action=collection%2Ffork&collection-url=entityId%3D15899001-aaa15db3-9cec-44a6-86a1-c4aaacfbcaa1%26entityType%3Dcollection%26workspaceId%3D8432e8fd-7e6c-4072-8615-65887d41d744)
 
-1. If you don't already have a Postman account, please login using this temporary account to access the request collection.
+4. If you don't already have a Postman account, please login using this temporary account to access the request collection: 
 
-1. As the database will be empty, to load some sample data into the database, use the Sample Data request [http://localhost:9080/membership-system/sampledata/load](http://localhost:9080/membership-system/sampledata/load). This request requires no authentication as it is not part of the Membership System, just a helpful way to load data in to test the application. It will enter three Employee records into the database and open Accounts for them.
+5. As the database will be empty, to load some sample data into the database, use the Sample Data request [http://localhost:9080/membership-system/sampledata/load](http://localhost:9080/membership-system/sampledata/load). This request requires no authentication as it is not part of the Membership System, just a helpful way to load data in to test the application. It will enter three Employee records into the database and open Accounts for them.
+*Sample data request*
 ![Sample data request](./docs-assets/Sample-data-request.png)
 
-1. You will need to authenticate all other requests on the Membership System with a Json Web Token. Use the Login API [https://localhost:6080/membership-system/login](https://localhost:6080/membership-system/login) to login with any of the credentials below:
+6. You will need to authenticate all other requests on the Membership System with a Json Web Token. Use the Login API [https://localhost:6080/membership-system/login](https://localhost:6080/membership-system/login) to login with any of the credentials below:
+
 | Username | Password | Role        | 
 |----------|----------|-------------|
 | jade     | jadepwd  | admin, user |
 | frank    | frankpwd | user        |
 | lydia    | lydiapwd | user        |
 
+*Login with any of the provided credentials to get a JWT*
 ![Login API](./docs-assets/Login-API.png)
 
-1. Copy and paste the Json Web Token from the response (excluding the quotation marks) and paste it into the Bearer token to make requests on the Membership System.
+7. Copy and paste the Json Web Token from the response (excluding the quotation marks) and paste it into the Bearer token to make requests on the Membership System.
+*Copy the JWT from the response*
 ![Copy JWT from response](./docs-assets/Copy-JWT-from-response.png)
+*and paste it into the Bearer token of the other requests*
 ![JWT in Bearer](./docs-assets/JWT-in-Bearer.png)
 
-1. Use the Get all employees request [http://localhost:9080/membership-system/employees](http://localhost:9080/membership-system/employees) to view the sample data that was just loaded into the system.
+8. Use the Get all employees request [http://localhost:9080/membership-system/employees](http://localhost:9080/membership-system/employees) to view the sample data that was just loaded into the system.
 
-1. Use any of the other requests in Postman: view information about an individual employee, update their details, create a new employee, view an employee’s account balance using their card number, top up their balance or pay for an item.
+9. Use any of the other requests in Postman: view information about an individual employee, update their details, create a new employee, view an employee’s account balance using their card number, top up their balance or pay for an item.
 
-1. To stop the servers, press CTRL+C in the Terminal session where the server is.
+10. To stop the servers, press CTRL+C in the Terminal session where the server is.
