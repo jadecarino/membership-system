@@ -89,7 +89,7 @@ public class AccountQuery {
             return Response.status(Response.Status.OK).entity(builder.build()).build();
 
         } else {
-            return Response.status(Response.Status.UNAUTHORIZED).entity("Must be a User to access this service").build();
+            return Response.status(Response.Status.FORBIDDEN).entity("Must be a User to access this service").build();
         }
 
     }
@@ -130,7 +130,7 @@ public class AccountQuery {
             return Response.status(Response.Status.OK).entity("Balance topped up").build();
 
         } else {
-            return Response.status(Response.Status.UNAUTHORIZED).entity("Must be a User to access this service").build();
+            return Response.status(Response.Status.FORBIDDEN).entity("Must be a User to access this service").build();
         }
 
     }
@@ -175,7 +175,7 @@ public class AccountQuery {
             return Response.status(Response.Status.OK).entity("Thanks for your purchase").build();
 
         } else {
-            return Response.status(Response.Status.UNAUTHORIZED).entity("Must be a User to access this service").build();
+            return Response.status(Response.Status.FORBIDDEN).entity("Must be a User to access this service").build();
         }
 
     }

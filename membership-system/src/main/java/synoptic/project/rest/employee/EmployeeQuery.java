@@ -291,7 +291,9 @@ public class EmployeeQuery {
         if (groups.contains("admin")){
             for (Employee employee : employeeDAO.readAllEmployees()){
                 Account account = accountDAO.readAccount(employee.getCardNumber());
-                accountDAO.deleteAccount(account);
+                if (account != null){
+                    accountDAO.deleteAccount(account);
+                }
                 employeeDAO.deleteEmployee(employee);
             }
             return Response.status(Response.Status.OK).entity("Database cleared").build();

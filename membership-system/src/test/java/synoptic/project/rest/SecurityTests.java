@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 
 import synoptic.project.rest.employee.Employee;
 
-public class SecurityTests extends EmployeeTests {
+public class SecurityTests extends AccountTests {
 
     private static final String JSONFIELD_NAME = "name";
     private static final String JSONFIELD_PHONENUMBER = "phoneNumber";
@@ -40,9 +40,9 @@ public class SecurityTests extends EmployeeTests {
     private static final String UPDATE_EMPLOYEE_COMPANY = "Firebrand";
     private static final String UPDATE_EMPLOYEE_CARDNUMBER = "87654321";
 
+    private static final String INVALID_CARD_NUMBER = "-1";
+
     private static final int OK_CODE = Status.OK.getStatusCode();
-    private static final int NOT_FOUND_CODE = Status.NOT_FOUND.getStatusCode();
-    private static final int BAD_REQUEST_CODE = Status.BAD_REQUEST.getStatusCode();
     private static final int FORBIDDEN_CODE = Status.FORBIDDEN.getStatusCode();
 
     private static final String ADMIN_USERNAME = "jade";
@@ -91,14 +91,14 @@ public class SecurityTests extends EmployeeTests {
          * Cannot generate a JWT from my Login API for a user who is not either a User or Admin
          * JWT for a user in no group has been generated manually for testing purposes
          */
-        Scanner s = new Scanner(new File("src/main/resources/noGroupJwt.txt"));
+        Scanner s = new Scanner(new File("src/main/resources/invalidJwt.txt"));
 		while (s.hasNextLine()) {
-			noGroupJwt = s.next();
+			invalidJwt = s.next();
 		}
     }
 
     @Test
-    public void testReadAll(){
+    public void testReadAllEmployees(){
         int getResponse = getRequest(adminJwt).getStatus();
         assertEquals(OK_CODE, getResponse,
             "Trying to read all employees with an Admin JWT should return the HTTP response code " + OK_CODE);
@@ -109,31 +109,31 @@ public class SecurityTests extends EmployeeTests {
     }
 
     @Test
-    public void testReadIndividual(){
-        int getResponse = getRequestIndividual(noGroupJwt, "-1").getStatus();
+    public void testReadIndividualEmployee(){
+        int getResponse = getRequestIndividual(invalidJwt, "-1").getStatus();
         assertEquals(FORBIDDEN_CODE, getResponse,
-            "Trying to read an employee that doesn't exist without being in a security group should return the HTTP response code " 
-            + FORBIDDEN_CODE + " over the HTTP response code " + NOT_FOUND_CODE);
+            "Trying to read an employee that doesn't exist with an invalid JWT should return the HTTP response code " 
+            + FORBIDDEN_CODE);
     }
 
     @Test
-    public void testCreate(){
+    public void testCreateEmployee(){
         int postResponse = postRequest(userJwt, employeeForm, EMPLOYEE_NAME, EMPLOYEE_PHONENUMBER, EMPLOYEE_EMAILADDRESS, EMPLOYEE_COMPANY, EMPLOYEE_CARDNUMBER).getStatus();
         assertEquals(OK_CODE, postResponse, 
             "Creating an employee with a User JWT should return the HTTP response code " + OK_CODE);
-        postResponse = postRequest(noGroupJwt, employeeForm, EMPLOYEE_NAME, EMPLOYEE_PHONENUMBER, EMPLOYEE_EMAILADDRESS, EMPLOYEE_COMPANY, EMPLOYEE_CARDNUMBER).getStatus();
+        postResponse = postRequest(invalidJwt, employeeForm, EMPLOYEE_NAME, EMPLOYEE_PHONENUMBER, EMPLOYEE_EMAILADDRESS, EMPLOYEE_COMPANY, EMPLOYEE_CARDNUMBER).getStatus();
         assertEquals(FORBIDDEN_CODE, postResponse,
-            "Trying to create an employee that already exists without being in a security group should return the HTTP response code "
-            + FORBIDDEN_CODE + " over the HTTP response code " + BAD_REQUEST_CODE);
+            "Trying to create an employee that already exists with an invalid JWT should return the HTTP response code "
+            + FORBIDDEN_CODE);
     }
 
     @Test
-    public void testUpdate(){
-        int doesNotExistUpdateResponse = updateRequest(noGroupJwt, employeeForm, "-1", UPDATE_EMPLOYEE_NAME, UPDATE_EMPLOYEE_PHONENUMBER,
+    public void testUpdateEmployee(){
+        int doesNotExistUpdateResponse = updateRequest(invalidJwt, employeeForm, "-1", UPDATE_EMPLOYEE_NAME, UPDATE_EMPLOYEE_PHONENUMBER,
             UPDATE_EMPLOYEE_EMAILADDRESS, UPDATE_EMPLOYEE_COMPANY, UPDATE_EMPLOYEE_CARDNUMBER).getStatus();
         assertEquals(FORBIDDEN_CODE, doesNotExistUpdateResponse, 
-            "Trying to update an employee that does not exist without being in a security group should return the HTTP response code "
-            + FORBIDDEN_CODE + " over the HTTP response code " + NOT_FOUND_CODE);
+            "Trying to update an employee that does not exist with an invalid JWT should return the HTTP response code "
+            + FORBIDDEN_CODE);
 
         int postResponse = postRequest(adminJwt, employeeForm, EMPLOYEE_NAME, EMPLOYEE_PHONENUMBER, EMPLOYEE_EMAILADDRESS, EMPLOYEE_COMPANY, EMPLOYEE_CARDNUMBER).getStatus();
         assertEquals(OK_CODE, postResponse, 
@@ -141,23 +141,23 @@ public class SecurityTests extends EmployeeTests {
 
         Employee e = new Employee(EMPLOYEE_NAME, EMPLOYEE_PHONENUMBER, EMPLOYEE_EMAILADDRESS, EMPLOYEE_COMPANY, EMPLOYEE_CARDNUMBER);
         JsonObject employee = findEmployee(adminJwt, e);
-        int existsUpdateResponse = updateRequest(noGroupJwt, employeeForm, employee.get("employeeId").toString(), EMPLOYEE_NAME, EMPLOYEE_PHONENUMBER,
+        int existsUpdateResponse = updateRequest(invalidJwt, employeeForm, employee.get("employeeId").toString(), EMPLOYEE_NAME, EMPLOYEE_PHONENUMBER,
             EMPLOYEE_EMAILADDRESS, EMPLOYEE_COMPANY, EMPLOYEE_CARDNUMBER).getStatus();
         assertEquals(FORBIDDEN_CODE, existsUpdateResponse, 
-            "Trying to update an employee with the same details without being in a security group should return the HTTP response code "
-            + FORBIDDEN_CODE + " over the HTTP response code " + BAD_REQUEST_CODE);
+            "Trying to update an employee with the same details with an invalid JWT should return the HTTP response code "
+            + FORBIDDEN_CODE);
     }
 
     @Test
-    public void testDelete(){
-        int deleteResponse = deleteRequest(noGroupJwt, "-1").getStatus();
+    public void testDeleteEmployee(){
+        int deleteResponse = deleteRequest(invalidJwt, "-1").getStatus();
         assertEquals(FORBIDDEN_CODE, deleteResponse,
-            "Trying to delete an employee that does not exist without being in a security group should return the HTTP response code "
-            + FORBIDDEN_CODE + " over the HTTP response code " + NOT_FOUND_CODE);
+            "Trying to delete an employee that does not exist with an invalid JWT should return the HTTP response code "
+            + FORBIDDEN_CODE);
     }
 
     @Test
-    public void testDeleteAll(){
+    public void testDeleteAllEmployees(){
         int deleteResponse = clearDatabase(adminJwt).getStatus();
         assertEquals(OK_CODE, deleteResponse,
             "Clearing the database with an Admin JWT should return the HTTP response code " + OK_CODE);
@@ -165,6 +165,30 @@ public class SecurityTests extends EmployeeTests {
         deleteResponse = clearDatabase(userJwt).getStatus();
         assertEquals(FORBIDDEN_CODE, deleteResponse,
             "Trying to clear the database with a User JWT should return the HTTP response code " + FORBIDDEN_CODE);
+    }
+
+    @Test
+    public void testReadBalance(){
+        int getResponse = getRequest(invalidJwt, INVALID_CARD_NUMBER).getStatus();
+        assertEquals(getResponse, FORBIDDEN_CODE,
+            "Trying to read an Account balance with an invalid JWT should return the HTTP response code "
+            + FORBIDDEN_CODE);
+    }
+
+    @Test
+    public void testTopUpBalance(){
+        int topUpResponse = topUpRequest(invalidJwt, INVALID_CARD_NUMBER, 100).getStatus();
+        assertEquals(topUpResponse, FORBIDDEN_CODE,
+            "Trying to top up an Account balance with an invalid JWT should return the HTTP response code " + 
+            FORBIDDEN_CODE);
+    }
+
+    @Test
+    public void testPayForItem(){
+        int payResponse = payRequest(invalidJwt, INVALID_CARD_NUMBER, 100).getStatus();
+        assertEquals(payResponse, FORBIDDEN_CODE,
+            "Trying to pay for an item with an invalid JWT should return the HTTP response code " + 
+            FORBIDDEN_CODE);
     }
 
     @AfterEach

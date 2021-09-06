@@ -25,7 +25,7 @@ public class Tests {
     protected String adminJwt;
     protected Response userLoginResponse;
     protected String userJwt;
-    protected String noGroupJwt;
+    protected String invalidJwt;
 
     /**
      * Makes a GET request to the /login endpoint
