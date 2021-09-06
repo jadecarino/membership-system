@@ -54,7 +54,7 @@ Now, you can use Postman to test out the application. If you don't already have 
 
 ![Sample data request](./docs-assets/Sample-data-request.png)
 
-6. You will need to authenticate all other requests on the Membership System with a Json Web Token. Use the Login API [https://localhost:6080/membership-system/login](https://localhost:6080/membership-system/login) to login with any of the credentials below:
+6. You will need to authenticate all other requests on the Membership System with a Json Web Token. Use the Login API [https://localhost:6080/membership-system/login](https://localhost:6080/membership-system/login) to login with any of the credentials below and get a Json Web Token:
 
 | Username | Password | Role        | 
 |----------|----------|-------------|
@@ -64,7 +64,7 @@ Now, you can use Postman to test out the application. If you don't already have 
 
 ![Login API](./docs-assets/Login-API.png)
 
-7. Copy and paste the Json Web Token from the response (excluding the quotation marks) and paste it into the Bearer token to make requests on the Membership System.
+7. Copy the Json Web Token from the response (excluding the quotation marks) to your clipboard. You can now paste it into the Bearer token of all other requests on the Membership System to authenticate them. 
 
 ![Copy JWT from response](./docs-assets/Copy-JWT-from-response.png)
 
@@ -72,6 +72,8 @@ Now, you can use Postman to test out the application. If you don't already have 
 
 8. Use the Get all employees request [http://localhost:9080/membership-system/employees](http://localhost:9080/membership-system/employees) to view the sample data that was just loaded into the system.
 
-9. Use any of the other requests in Postman: view information about an individual employee, update their details, create a new employee, view an employee’s account balance using their card number, top up their balance or pay for an item.
+9. Use any of the other requests in the Postman collection: view information about an individual employee, update their details, create a new employee, view an employee’s account balance using their card number, top up their balance or pay for an item.
 
 10. To stop the servers, press CTRL+C in the Terminal session where the server is.
+
+Thanks for using my application!
