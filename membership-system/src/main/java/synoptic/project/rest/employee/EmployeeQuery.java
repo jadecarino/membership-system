@@ -177,7 +177,7 @@ public class EmployeeQuery {
             Account newAccount = new Account(cardNumber, 0);
             accountDAO.createAccount(newAccount);
 
-            return Response.status(Response.Status.OK).entity("Employee created and account opened").build(); 
+            return Response.status(Response.Status.OK).entity("Employee created and Account opened").build(); 
 
         } else {
            return Response.status(Response.Status.FORBIDDEN).entity("Must be a User to access this service").build();
@@ -224,7 +224,7 @@ public class EmployeeQuery {
                 Account newAccount = new Account(newCardNumber, balance);
                 accountDAO.createAccount(newAccount);
                 accountDAO.deleteAccount(oldAccount);
-                confirmationMessage = confirmationMessage + " and new account opened with new Card Number";
+                confirmationMessage = confirmationMessage + " and new Account opened with new Card Number";
             }
 
             prevEmployee.setName(newName);
@@ -271,7 +271,7 @@ public class EmployeeQuery {
             accountDAO.deleteAccount(account);
             employeeDAO.deleteEmployee(employee);
     
-            return Response.status(Response.Status.OK).entity("Employee deleted and account closed").build();
+            return Response.status(Response.Status.OK).entity("Employee deleted and Account closed").build();
         } else {
             return Response.status(Response.Status.FORBIDDEN).entity("Must be a User to access this service").build();
         }

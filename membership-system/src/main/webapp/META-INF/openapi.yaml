@@ -299,6 +299,165 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonError'
+################
+# Account API  #
+################
+  /{cardNumber}/balance:
+    post:
+      operationId: getBalance
+      summary: Get Account balance
+      security:
+        - BearerAuth
+      parameters: 
+        - name: cardNumber
+          in: path
+          description: Card number
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Json Object containing Account balance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Balance'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+  /{cardNumber}/topup:
+    put:
+      operationId: topUp
+      summary: Top up balance
+      security:
+        - BearerAuth
+      parameters: 
+        - name: cardNumber
+          in: path
+          description: Card number
+          required: true
+          schema:
+            type: string
+        - name: amount
+          in: query
+          description: Amount of money
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Confirmation message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Confirmation'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+  /{cardNumber}/pay:
+    put:
+      operationId: pay
+      summary: Deduct from balance
+      security:
+        - BearerAuth
+      parameters: 
+        - name: cardNumber
+          in: path
+          description: Card number
+          required: true
+          schema:
+            type: string
+        - name: amount
+          in: query
+          description: Amount of money
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Confirmation message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Confirmation'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
 
 components:
   securitySchemes:
@@ -306,6 +465,11 @@ components:
       type: http
       scheme: bearer
   schemas:
+    Balance:
+      type: object
+      properties:
+        balance:
+          type: integer
     Employees:
       type: object
       properties:

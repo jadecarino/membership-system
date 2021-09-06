@@ -2,56 +2,27 @@ package synoptic.project.rest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Base64;
 import java.util.HashMap;
 
 import javax.json.JsonArray;
 import javax.json.JsonObject;
-import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.Response;
 
 import synoptic.project.rest.employee.Employee;
 
-public class EmployeeTests {
+public class EmployeeTests extends Tests {
 
-    private WebTarget webTarget;
-
-    protected Form form;
-    protected Client client;
-    protected Response response;
     protected HashMap<String, String> employeeForm;
 
-    protected static String loginBaseUrl;
-    protected static String loginPort;
-
-    protected static String baseUrl;
-    protected static String membershipSystemPort;
-
-    protected Response adminLoginResponse;
-    protected String adminJwt;
-    protected Response userLoginResponse;
-    protected String userJwt;
-    protected String noGroupJwt;
-
-    /**
-     * Makes a GET request to the /login endpoint
-     */
-    protected Response loginRequest(String username, String password) {
-        String credentials = username + ":" + password;
-        String encoded = new String(Base64.getEncoder().encode(credentials.getBytes()));
-        webTarget = client.target(loginBaseUrl);
-        response = webTarget.request().header("Authorization", "Basic " + encoded).get();
-        return response;
-    }
+    private static final String EMPLOYEES = "/employees";
 
     /**
      *  Makes a GET request to the /employees endpoint
      */
     protected Response getRequest(String jwt) {
-        webTarget = client.target(baseUrl);
+        webTarget = client.target(baseUrl + EMPLOYEES);
         response = webTarget.request().header("Authorization", "Bearer " + jwt).get();
         return response;
     }
@@ -60,7 +31,7 @@ public class EmployeeTests {
      *  Makes a GET request to the /employees/{employeeId} endpoint
      */ 
     protected Response getRequestIndividual(String jwt, String employeeId) {
-        webTarget = client.target(baseUrl + "/" + employeeId);
+        webTarget = client.target(baseUrl + EMPLOYEES + "/" + employeeId);
         response = webTarget.request().header("Authorization", "Bearer " + jwt).get();
         return response;
     }
@@ -74,7 +45,7 @@ public class EmployeeTests {
         formDataMap.forEach((formField, data) -> {
             form.param(formField, data);
         });
-        webTarget = client.target(baseUrl + "?name=" + name + "&phoneNumber=" + phoneNumber + "&emailAddress=" + 
+        webTarget = client.target(baseUrl + EMPLOYEES + "?name=" + name + "&phoneNumber=" + phoneNumber + "&emailAddress=" + 
                                     emailAddress + "&company=" + company + "&cardNumber=" + cardNumber);  
         response = webTarget.request().header("Authorization", "Bearer " + jwt).post(Entity.form(form));
         form = new Form();
@@ -90,7 +61,7 @@ public class EmployeeTests {
         formDataMap.forEach((formField, data) -> {
             form.param(formField, data);
         });
-        webTarget = client.target(baseUrl + "/" + employeeId + "?name=" + name + "&phoneNumber=" + phoneNumber + "&emailAddress=" + 
+        webTarget = client.target(baseUrl + EMPLOYEES + "/" + employeeId + "?name=" + name + "&phoneNumber=" + phoneNumber + "&emailAddress=" + 
                                     emailAddress + "&company=" + company + "&cardNumber=" + cardNumber);
         response = webTarget.request().header("Authorization", "Bearer " + jwt).put(Entity.form(form));
         form = new Form();
@@ -101,7 +72,7 @@ public class EmployeeTests {
      *  Makes a DELETE request to /employees/{employeeId} endpoint
      */
     protected Response deleteRequest(String jwt, String employeeId) {
-        webTarget = client.target(baseUrl + "/" + employeeId);
+        webTarget = client.target(baseUrl + EMPLOYEES + "/" + employeeId);
         response = webTarget.request().header("Authorization", "Bearer " + jwt).delete();
         return response;
     }
@@ -128,7 +99,7 @@ public class EmployeeTests {
      *  Makes a DELETE request to the /employees/clear endpoint to clear the database
      */
     protected Response clearDatabase(String jwt){
-        webTarget = client.target(baseUrl + "/clear");
+        webTarget = client.target(baseUrl + EMPLOYEES + "/clear");
         response = webTarget.request().header("Authorization", "Bearer " + jwt).delete();
         return response;
     }

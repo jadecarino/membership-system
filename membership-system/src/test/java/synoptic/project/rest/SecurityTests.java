@@ -54,13 +54,11 @@ public class SecurityTests extends EmployeeTests {
 
     @BeforeAll
     public static void beforeAll() {
-        // loginPort = "6080";
-        // loginBaseUrl = "https://localhost:" + loginPort + "/membership-system/login";
         loginPort = "6000";
         loginBaseUrl = "http://localhost:" + loginPort + "/membership-system/login";
 
         membershipSystemPort = "9080";
-        baseUrl = "http://localhost:" + membershipSystemPort + "/membership-system/employees";
+        baseUrl = "http://localhost:" + membershipSystemPort + "/membership-system";
     }
 
     /**

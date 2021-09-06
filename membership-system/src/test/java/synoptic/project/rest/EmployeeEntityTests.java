@@ -49,7 +49,7 @@ public class EmployeeEntityTests extends EmployeeTests {
         loginBaseUrl = "http://localhost:" + loginPort + "/membership-system/login";
 
         membershipSystemPort = "9080";
-        baseUrl = "http://localhost:" + membershipSystemPort + "/membership-system/employees";
+        baseUrl = "http://localhost:" + membershipSystemPort + "/membership-system";
     }
 
     @BeforeEach
@@ -59,7 +59,6 @@ public class EmployeeEntityTests extends EmployeeTests {
         client.register(JsrJsonpProvider.class);
         
         employeeForm = new HashMap<String, String>();
-
         employeeForm.put(JSONFIELD_NAME, EMPLOYEE_NAME);
         employeeForm.put(JSONFIELD_PHONENUMBER, EMPLOYEE_PHONENUMBER);
         employeeForm.put(JSONFIELD_EMAILADDRESS, EMPLOYEE_EMAILADDRESS);
