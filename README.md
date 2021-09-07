@@ -7,7 +7,7 @@ Prerequisites:
 -	Java
 -	Maven
 -   Postman
--	Git
+-	Git (optional)
 
 ## Building and deploying to Open Liberty
 
@@ -55,7 +55,7 @@ Now, you can use Postman to test out the application.
 **IMPORTANT: if you are using the Postman web client, you will need to download the Postman Desktop Agent.**
 
 
-1. Press the button below (or copy and paste the link underneath) to fork and use the collection:
+1. Press the button below (or click the link underneath) to fork and use the collection:
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/15899001-aaa15db3-9cec-44a6-86a1-c4aaacfbcaa1?action=collection%2Ffork&collection-url=entityId%3D15899001-aaa15db3-9cec-44a6-86a1-c4aaacfbcaa1%26entityType%3Dcollection%26workspaceId%3D8432e8fd-7e6c-4072-8615-65887d41d744)
 
@@ -74,12 +74,12 @@ If you don't already have a Postman account, please login using this temporary a
 
 3. Once you have forked the collection and can see a workspace, expand all of the folders inside the Membership System collection to see all of the requests:
 
-![Postman](./docs-assets/Postman.png)
+![Sample data request](./docs-assets/Sample-data-request.png)
 
 
 4. As the database will be empty, to load some sample data into the database, use the **Load** request in the Load sample data folder. This request requires no authentication as it is not part of the Membership System, just a helpful way to load data in to test the application. It will enter three Employee records into the database and open Accounts for them.
 
-![Sample data request](./docs-assets/Sample-data-request.png)
+![Postman](./docs-assets/Postman.png)
 
 
 5. You will need to authenticate all other requests on the Membership System with a Json Web Token, as I have secured the application. Use the **Login** request in the Login folder to login with any of the credentials below and get a Json Web Token back:
@@ -117,17 +117,19 @@ If you don't already have a Postman account, please login using this temporary a
 ## How to write requests:
 The requests require a mix of path and query parameters. I have already filled in some parameters in the some of the requests so you can just press send from Postman, but please feel free to add your own parameters.
 
-I have left placeholders in some requests {employeeId} and {cardNumber} as you will need to fill these in yourself with data from the database (TIP: use the employeeIds and cardNumbers from employees you created in the **Load** request).
+I have left placeholders in some requests _{employeeId}_ and _{cardNumber}_ as you will need to fill these in yourself with data from the database (**TIP:** use the employeeIds and cardNumbers from employees you created in the **Load** request).
 
 1.	Path parameters are for identifying a resource, they come after a ‘/’. The path below means you want to do something with the employee with employeeId ‘1234’.
 
 localhost:9080/membership-system/employees/{employeeId}
+
 localhost:9080/membership-system/employees/1234
 
 
 2.	Query parameters are for entering information, they come after a ‘?’, and after the parameter name. The path below means you are filling in information, and the ‘name’ you want to provide is ‘Jade’.
 
 localhost:9080/membership-system/employees?name={name}
+
 localhost:9080/membership-system/employees?name=Jade
 
 
